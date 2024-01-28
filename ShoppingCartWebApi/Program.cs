@@ -1,5 +1,7 @@
+using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 using ShoppingCartWebApi.Data;
+using ShoppingCartWebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//add connection azure blob
+builder.Services.AddScoped(_ =>
+{
+	return new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobStorage"));
+});
+
+//register IFileService
+builder.Services.AddScoped<IFileServices, FileServices>();
 builder.Services.AddCors(option =>
 {
 option.AddPolicy(name: "ReactJSDomain",
